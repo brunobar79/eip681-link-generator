@@ -47,38 +47,49 @@ window.generate = function() {
 		document.getElementById("function_name").value !== ""
 			? document.getElementById("function_name").value
 			: null;
-	let params = "";
+	let params = {};
 	paramFields.forEach(ts => {
 		const key = document.getElementById(`key_${ts}`).value;
 		let val = document.getElementById(`val_${ts}`).value;
-		if (key === "value" && function_name === "") {
+		if (key === "value" && !function_name) {
 			if (val !== "") {
 				val += "e18";
 			}
 		}
 		if (val !== "") {
-			params += params === "" ? "?" : "&";
-			params += `${key}=${val}`;
+			params[key] = val;
 		}
 	});
     
 	try {
-		 url = ethParser.build({
+         const data = {
 			scheme: url_scheme,
 			prefix: pay_prefix,
 			target_address,
 			chain_id,
 			function_name,
 			parameters: params
-		});
+		};
+        
+        console.log(data);
+		const url = ethParser.build(data);
 
         document.getElementById("url").href = url;
         document.getElementById("url").innerText = url;
 
-        const img = document.createElement("img");
         const baseImgUrl = 'http://api.qrserver.com/v1/create-qr-code/?color=000000&bgcolor=FFFFFF&data=${DATA}&qzone=1&margin=0&size=250x250&ecc=L';
-        img.src = baseImgUrl.replace('${DATA}', escape(url));
-        document.getElementById("qr-wrapper").appendChild(img);
+        const qrCodeUrl = baseImgUrl.replace('${DATA}', escape(url));
+
+        if(document.getElementById("qr-wrapper").firstElementChild){
+            const img = document.getElementById("qr-wrapper").firstElementChild;
+            img.src = qrCodeUrl;
+        }else{
+             const img = document.createElement("img");
+            img.src = qrCodeUrl
+            document.getElementById("qr-wrapper").appendChild(img);
+        }
+
+       
 
 
 	} catch (e) {
