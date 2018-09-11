@@ -1,0 +1,24 @@
+{
+  "name": "eip681",
+  "version": "1.0.0",
+  "description": "Simple web app to generate ethereum standard urls based on EIP-681",
+  "main": "index.js",
+  "dependencies": {
+    "eth-url-parser": "^1.0.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "browserify js/index.js -o js/bundle.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/brunobar79/eip681-link-generator.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/brunobar79/eip681-link-generator/issues"
+  },
+  "homepage": "https://github.com/brunobar79/eip681-link-generator#readme"
+}
