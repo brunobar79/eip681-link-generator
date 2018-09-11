@@ -1,11 +1,10 @@
-
 <!doctype html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
+    <meta name="description" content="Ethereum transaction link generator based on EIP-681 and EIP-831">
+    <meta name="author" content="Bruno Barbieri">
 
     <title>EIP-681 - Ethereum transaction link generator</title>
 
@@ -15,10 +14,9 @@
     <!-- Custom styles for this template -->
     <link href="https://getbootstrap.com/docs/4.0/examples/album/album.css" rel="stylesheet">
     <script>
-
         let paramFields = [];
 
-        function addNewParam(){
+        function addNewParam() {
             const ts = Date.now();
 
             const newKeyField = document.createElement('input');
@@ -48,54 +46,54 @@
             document.getElementById('params-container').appendChild(row);
         }
 
-        function generate(){
+        function generate() {
 
             const url_scheme = 'ethereum:';
-            const pay_prefix = document.getElementById('is_payment').checked ? "pay-"  : '';
+            const pay_prefix = document.getElementById('is_payment').checked ? "pay-" : '';
             const target_address = document.getElementById('target_address').value;
-            if(!isValidAddress(target_address)){
+            if (!isValidAddress(target_address)) {
                 alert('The target address is not a valid ethereum address');
                 return false;
             }
-            const chain_id = document.getElementById('chain_id').value!=='' ? `@${document.getElementById('chain_id').value}`:'';
-            const function_name = document.getElementById('function_name').value !== '' ? `/${document.getElementById('function_name').value}`: '';
+            const chain_id = document.getElementById('chain_id').value !== '' ? `@${document.getElementById('chain_id').value}` : '';
+            const function_name = document.getElementById('function_name').value !== '' ? `/${document.getElementById('function_name').value}` : '';
             let params = '';
-            paramFields.forEach( ts => {
+            paramFields.forEach(ts => {
                 const key = document.getElementById(`key_${ts}`).value;
                 let val = document.getElementById(`val_${ts}`).value;
-                if(key === 'value' && function_name === ''){
-                    if(val !== ''){
+                if (key === 'value' && function_name === '') {
+                    if (val !== '') {
                         val += 'e18';
                     }
                 }
-                if(key === 'address'){
-                    if(!isValidAddress(val)){
+                if (key === 'address') {
+                    if (!isValidAddress(val)) {
                         alert('The address param is not a valid ethereum address');
                         return false;
                     }
                 }
-                if(val !== ''){
-                    params += params === '' ? '?':'&';
+                if (val !== '') {
+                    params += params === '' ? '?' : '&';
                     params += `${key}=${val}`
                 }
             })
 
             const url = `${url_scheme}${pay_prefix}${target_address}${chain_id}${function_name}${params}`
 
-            document.getElementById('url').href=url;
-            document.getElementById('url').innerText=url;
+            document.getElementById('url').href = url;
+            document.getElementById('url').innerText = url;
         }
 
-        function showView(name){
-            if(name === 'ether'){
+        function showView(name) {
+            if (name === 'ether') {
                 document.getElementById('function_name').style.display = 'none';
                 document.getElementById('add_parameter').style.visibility = 'hidden';
                 addNewParam();
-                document.getElementById(`key_${paramFields[0]}`).value='value';
+                document.getElementById(`key_${paramFields[0]}`).value = 'value';
                 document.getElementById(`key_${paramFields[0]}`).style.display = 'none';
-                document.getElementById(`val_${paramFields[0]}`).placeholder='Amount in ETH';
-                document.getElementById(`val_${paramFields[0]}`).type='number';
-            }else if(name === 'erc20'){
+                document.getElementById(`val_${paramFields[0]}`).placeholder = 'Amount in ETH';
+                document.getElementById(`val_${paramFields[0]}`).type = 'number';
+            } else if (name === 'erc20') {
                 document.getElementById('payment-link').style.display = 'hidden';
                 document.getElementById('function_name').style.display = 'block';
                 document.getElementById('function_name').value = 'transfer';
@@ -103,15 +101,15 @@
                 document.getElementById('add_parameter').style.visibility = 'hidden';
                 addNewParam();
                 document.getElementById(`target_address`).placeholder = 'Contract address';
-                document.getElementById(`key_${paramFields[0]}`).value='address';
+                document.getElementById(`key_${paramFields[0]}`).value = 'address';
                 document.getElementById(`key_${paramFields[0]}`).style.display = 'none';
-                document.getElementById(`val_${paramFields[0]}`).placeholder='Receiver address';
+                document.getElementById(`val_${paramFields[0]}`).placeholder = 'Receiver address';
                 setTimeout(_ => {
                     addNewParam();
-                    document.getElementById(`key_${paramFields[1]}`).value='uint256';
+                    document.getElementById(`key_${paramFields[1]}`).value = 'uint256';
                     document.getElementById(`key_${paramFields[1]}`).style.display = 'none';
-                    document.getElementById(`val_${paramFields[1]}`).type='number';
-                    document.getElementById(`val_${paramFields[1]}`).placeholder='Amount of tokens';
+                    document.getElementById(`val_${paramFields[1]}`).type = 'number';
+                    document.getElementById(`val_${paramFields[1]}`).placeholder = 'Amount of tokens';
                 }, 1);
             }
             document.getElementById('form').style.display = 'block';
@@ -119,123 +117,133 @@
             document.getElementById('reset').style.display = 'block';
         }
 
-
         // This is just a placeholder for proper validation
         function isValidAddress(address) {
-            return address.length === 42 && address.toLowerCase().substr(0,2) === '0x';
+            return address.length === 42 && address.toLowerCase().substr(0, 2) === '0x';
         }
-
     </script>
     <style>
-      .field {
-        padding: 10px;
-        font-size: 17px;
-        border-radius: 5px;
-        border: 1px solid #CACACA;
-      }
-      .short-field {
-        flex: 1;
-        display: flex;
-      }
-
-      .short-field:first-child{
-        margin-right: 15px;
-      }
-      .long-field {
-        width: 100%; 
-      }
-      .center {
-        width: 150px;
-        margin: auto;
-        display: block;
-      }
-      .param-row { 
-          display: flex;
-      }
-      
-      #form, #reset {
-          display: none;
-      }
-     
+        .field {
+            padding: 10px;
+            font-size: 17px;
+            border-radius: 5px;
+            border: 1px solid #CACACA;
+        }
+        
+        .short-field {
+            flex: 1;
+            display: flex;
+        }
+        
+        .short-field:first-child {
+            margin-right: 15px;
+        }
+        
+        .long-field {
+            width: 100%;
+        }
+        
+        .center {
+            width: 150px;
+            margin: auto;
+            display: block;
+        }
+        
+        .param-row {
+            display: flex;
+        }
+        
+        #form,
+        #reset {
+            display: none;
+        }
     </style>
-  </head>
+</head>
 
-  <body>
+<body>
 
     <main role="main">
-      <section class="jumbotron text-center">
-        <div class="container">
-          <h1 class="jumbotron-heading">Ethereum transaction link generator</h1>
-          <p class="lead text-muted">Genrate standard EIP-681 ethereum transactions urls on the fly!</p>
-          <br />
-          <br />
-          <div id='buttons'>
-                <h4 class="text-muted">What kind of url do you want to generate?</h4>
+        <section class="jumbotron text-center">
+            <div class="container">
+                <h1 class="jumbotron-heading">Ethereum transaction link generator</h1>
+                <p class="lead text-muted">Generate standard EIP-681 ethereum transactions urls on the fly!</p>
                 <br />
-                <p>
-                    <a href="#" class="btn btn-primary" onclick="showView('ether')">ETH Payment</a>
-                    <a href="#" class="btn btn-success" onclick="showView('erc20')">ERC20 token transfer</a>
-                    <a href="#" class="btn btn-warning" onclick="showView('advanced')">Other (advanced)</a>
-                </p>
-            </div>
-            <div id='reset'>
-                <a href='javascript:(void)' onclick={window.location.reload()}>Start again</a>
-            </div>
-        </div>
-      </section>
-      <section>
-        <div class="container">
-          <div id='form'>
-            <div class="row">
-                <div class="col-md-1 text-center"></div>
-                <div class="col-md-5">
-                    <p id='payment-link'>
-                        Is this a payment link? <input type='checkbox' name='is_payment' id='is_payment'/>
-                    </p>
+                <br />
+                <div id='buttons'>
+                    <h4 class="text-muted">What kind of url do you want to generate?</h4>
+                    <br />
                     <p>
-                        <input class="field long-field" type='text' name='target_address' id='target_address' placeholder='Target address' />
-                    </p>
-                    <p>
-                        <input class="field short-field" type='text' name='chain_id' id='chain_id' placeholder='Chain id (optional)' />
-                    </p>
-                    <p>
-                        <input class="field long-field" type='text' name='function_name' id='function_name' placeholder='Function name (optional)' />
+                        <a href="#" class="btn btn-primary" onclick="showView('ether')">ETH Payment</a>
+                        <a href="#" class="btn btn-success" onclick="showView('erc20')">ERC20 token transfer</a>
+                        <a href="#" class="btn btn-warning" onclick="showView('advanced')">Other (advanced)</a>
                     </p>
                 </div>
-                <div class="col-md-5 text-center">
-                    <p>
-                        <a  id='add_parameter' href="#" class="" onclick="addNewParam()">+ Add parameter</a>
-                    </p>
-                    <div id="params-container"></div>
-                </div>
-                <div class="col-md-1 text-center"></div>
-            </div>
-            <div class="row"><hr /></div>
-            <div class="row">
-                <div class="col-md-12 text-center">
-                    <p>
-                        <a href="#" class="btn btn-success" onclick="generate()">Generate URL</a>
-                    </p>
+                <div id='reset'>
+                    <a href='javascript:(void)' onclick={window.location.reload()}>Start again</a>
                 </div>
             </div>
-        </div>
-          <div class="row">
-            <div class="col-md-12 text-center">
-                <p><a id='url'></a></p>
+        </section>
+        <section>
+            <div class="container">
+                <div id='form'>
+                    <div class="row">
+                        <div class="col-md-1 text-center"></div>
+                        <div class="col-md-5">
+                            <p id='payment-link'>
+                                Is this a payment link?
+                                <input type='checkbox' name='is_payment' id='is_payment' />
+                            </p>
+                            <p>
+                                <input class="field long-field" type='text' name='target_address' id='target_address' placeholder='Target address' />
+                            </p>
+                            <p>
+                                <input class="field short-field" type='text' name='chain_id' id='chain_id' placeholder='Chain id (optional)' />
+                            </p>
+                            <p>
+                                <input class="field long-field" type='text' name='function_name' id='function_name' placeholder='Function name (optional)' />
+                            </p>
+                        </div>
+                        <div class="col-md-5 text-center">
+                            <p>
+                                <a id='add_parameter' href="#" class="" onclick="addNewParam()">+ Add parameter</a>
+                            </p>
+                            <div id="params-container"></div>
+                        </div>
+                        <div class="col-md-1 text-center"></div>
+                    </div>
+                    <div class="row">
+                        <hr />
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 text-center">
+                            <p>
+                                <a href="#" class="btn btn-success" onclick="generate()">Generate URL</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <p>
+                            <a id='url'></a>
+                        </p>
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
-      </section>
-      
+        </section>
+
     </main>
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script>window.jQuery || document.write('<script src="https://getbootstrap.com/docs/4.0/assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
+    <script>
+        window.jQuery || document.write('<script src="https://getbootstrap.com/docs/4.0/assets/js/vendor/jquery-slim.min.js"><\/script>')
+    </script>
     <script src="https://getbootstrap.com/docs/4.0/assets/js/vendor/popper.min.js"></script>
     <script src="https://getbootstrap.com/docs/4.0/dist/js/bootstrap.min.js"></script>
     <script src="https://getbootstrap.com/docs/4.0/assets/js/vendor/holder.min.js"></script>
-  </body>
+</body>
+
 </html>
